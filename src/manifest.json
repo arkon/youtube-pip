@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "Youtube Picture-in-Picture",
+  "short_name": "Youtube PIP",
+  "description": "Adds picture-in-picture functionality to YouTube.",
+  "version": "0.0.1",
+  "content_scripts": [{
+    "matches": ["*://www.youtube.com/watch*"],
+    "css": ["youtube-pip.css"],
+    "js": ["youtube-pip.js"],
+    "run_at": "document_end"
+  }],
+  "icons": {
+    "16": "icon/icon16.png",
+    "48": "icon/icon48.png",
+    "128": "icon/icon128.png"
+  }
+}

@@ -1,0 +1,32 @@
+#youtube-pip-toggle {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  height: 36px;
+  left: 0;
+  opacity: 0.9;
+  position: absolute;
+  top: 0;
+  transition: opacity 0.25s cubic-bezier(0,0,0.2,1);
+  width: 36px;
+  z-index: 9999;
+}
+
+.ytp-autohide #youtube-pip-toggle {
+  opacity: 0;
+}
+
+.youtube-pip#player {
+  display: inline;
+  height: 0 !important;
+}
+
+.youtube-pip #player-container {
+  box-shadow: 0 0 1.5em #000;
+  max-height: 100vh;
+  max-width: 100vw;
+  min-height: 100px;
+  min-width: 100px;
+  position: fixed !important;
+  z-index: 99999;
+}
