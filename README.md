@@ -1,6 +1,8 @@
 # youtube-pip
 
-Chrome extension that adds picture-in-picture functionality to YouTube so you can still see the video when scrolled down.
+> Chrome extension that adds picture-in-picture functionality to YouTube so you can still see the video when scrolled down.
+
+![](./art/screenshot.png)
 
 ## TODO
 
