@@ -4,7 +4,6 @@ Chrome extension that adds picture-in-picture functionality to YouTube so you ca
 
 ## TODO
 
-- [ ] Better icon (guard against background, better thickness)
 - [ ] Clean up code
 - [ ] Publish to store
 - [ ] Work with old YouTube design

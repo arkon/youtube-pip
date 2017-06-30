@@ -6,7 +6,6 @@ let manualResize = false;
 
 let elPlayer;
 let elPlayerContainer;
-
 let elPlayerMessage;
 
 // Attach to player
@@ -26,7 +25,7 @@ function injectPIP() {
   const elTogglePIP = document.createElement('button');
   elTogglePIP.id = 'youtube-pip-toggle';
   elTogglePIP.title = 'Toggle PIP';
-  elTogglePIP.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 36 36" width="100%"><path fill="#FFF" d="M0 6.9v22.2h36V6.9H0zm35 21.2H1V7.9h34v20.2z"/><path fill="#FFF" d="M34.2 14H15.4v13.6h18.8V14zm-1 12.5H16.5V15.1h16.7v11.4z"/></svg>';
+  elTogglePIP.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 22.11"><rect x="18.73" y="10.53" width="17.27" height="11.58" fill="#777"/><polygon points="30.85 1 3.48 1 1.55 1 1.55 2.93 1.55 17.48 1.55 19.41 3.48 19.41 16.69 19.41 16.69 17.48 3.48 17.48 3.48 2.93 30.85 2.93 30.85 8.69 32.78 8.69 32.78 2.93 32.78 1 30.85 1" fill="#777"/><rect x="17.18" y="9.53" width="17.27" height="11.58" fill="#fff"/><polygon points="29.3 0 1.93 0 0 0 0 1.93 0 16.48 0 18.41 1.93 18.41 15.14 18.41 15.14 16.48 1.93 16.48 1.93 1.93 29.3 1.93 29.3 7.69 31.23 7.69 31.23 1.93 31.23 0 29.3 0" fill="#fff"/></svg>';
   document.querySelector('#player-container #movie_player').appendChild(elTogglePIP);
 
   // Add listener to toggle button
