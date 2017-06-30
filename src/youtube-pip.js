@@ -1,27 +1,32 @@
 'use strict';
 
-// State flag
-let inPipMode = false;
-let manualResize = false;
+// ========================================================================= //
+// GLOBAL STATE / REFERENCES                                                 //
+// ========================================================================= //
 
-let elPlayer;
-let elPlayerContainer;
-let elPlayerMessage;
+const state = {
+  inPipMode    : false,
+  manualPip    : false,
+  manualResize : false
+};
 
-// Attach to player
-const interval = setInterval(checkForPlayer, 100);
-function checkForPlayer() {
-  if (document.querySelector('ytd-watch')) {
-    clearInterval(interval);
-    injectPIP();
-  }
-}
+const elRefs = {
+  player    : null,
+  container : null,
+  msg       : null
+};
+
+
+// ========================================================================= //
+// GLOBAL STATE / REFERENCES                                                 //
+// ========================================================================= //
 
 function injectPIP() {
-  elPlayer = document.querySelector('#top #player');
-  elPlayerContainer = document.querySelector('#player #player-container');
+  // Get element references
+  elRefs.player = document.querySelector('#top #player');
+  elRefs.container = document.querySelector('#top #player #player-container');
 
-  // Add toggle button to player
+  // Add toggle button to corner of player
   const elTogglePIP = document.createElement('button');
   elTogglePIP.id = 'youtube-pip-toggle';
   elTogglePIP.title = 'Toggle PIP';
@@ -29,72 +34,93 @@ function injectPIP() {
   document.querySelector('#player-container #movie_player').appendChild(elTogglePIP);
 
   // Add listener to toggle button
-  elTogglePIP.addEventListener('click', togglePIP);
+  elTogglePIP.addEventListener('click', () => {
+    state.manualPip = true;
+    togglePIP();
+  });
 
-  // Auto-PIP
+  // Auto-PIP on scroll (if not manually done)
   const observer = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
-      if ((entry.intersectionRatio < 0.5 && !inPipMode) || (entry.intersectionRatio > 0.5 && inPipMode)) {
+      if ((entry.intersectionRatio < 0.5 && !state.inPipMode) ||
+          (entry.intersectionRatio > 0.5 && state.inPipMode && !state.manualPip)) {
         togglePIP();
       }
     });
   }, {
     threshold: 0.5
   });
-  observer.observe(elPlayer);
+  observer.observe(elRefs.player);
 }
 
 function togglePIP() {
-  inPipMode = !inPipMode;
-  elPlayer.classList.toggle('youtube-pip', inPipMode);
+  state.inPipMode = !state.inPipMode;
+  elRefs.player.classList.toggle('youtube-pip', state.inPipMode);
 
-  manualResize = false;
-
-  if (inPipMode) {
-    elPlayerContainer.style.bottom = '16px';
-    elPlayerContainer.style.right = '16px';
+  if (state.inPipMode) {
+    elRefs.container.style.bottom = '16px';
+    elRefs.container.style.right  = '16px';
 
     window.addEventListener('resize', resizePIP);
-
-    addPlayerMessage();
+    addPlayerMsg();
   } else {
-    elPlayerContainer.style = null;
-    window.removeEventListener('resize', resizePIP);
+    state.manualPip = false;
 
-    removePlayerMessage();
+    elRefs.container.style = null;
+
+    window.removeEventListener('resize', resizePIP);
+    removePlayerMsg();
   }
 
+  state.manualResize = false;
   window.dispatchEvent(new Event('resize'));
 }
 
-function addPlayerMessage() {
-  elPlayerMessage = document.createElement('div');
-  elPlayerMessage.classList.add('youtube-pip-player-msg');
-  elPlayerMessage.innerText = 'Click to return player';
-  elPlayerMessage.addEventListener('click', togglePIP);
-  elPlayer.appendChild(elPlayerMessage);
+function addPlayerMsg() {
+  elRefs.msg = document.createElement('div');
+  elRefs.msg.classList.add('youtube-pip-player-msg');
+  elRefs.msg.innerText = 'Click to return player';
+  elRefs.msg.addEventListener('click', togglePIP);
+  elRefs.player.appendChild(elRefs.msg);
 }
 
-function removePlayerMessage() {
-  elPlayerMessage.removeEventListener('click', togglePIP);
-  elPlayer.removeChild(elPlayerMessage);
+function removePlayerMsg() {
+  elRefs.msg.removeEventListener('click', togglePIP);
+  elRefs.player.removeChild(elRefs.msg);
+  elRefs.msg = null;
 }
 
 function resizePIP() {
-  let newWidth = window.innerWidth / 3;
-  if (newWidth < 330) {
-    newWidth = 330;
-  }
+  requestAnimationFrame(() => {
+    let newWidth = window.innerWidth / 3;
+    if (newWidth < 330) {
+      newWidth = 330;
+    }
 
-  let newHeight = newWidth / 16 * 9;
+    let newHeight = newWidth / 16 * 9;
 
-  elPlayerContainer.style.width = newWidth + 'px';
-  elPlayerContainer.style.height = newHeight + 'px';
+    elRefs.container.style.width  = `${newWidth}px`;
+    elRefs.container.style.height = `${newHeight}px`;
 
-  if (!manualResize) {
-    manualResize = true;
-    window.dispatchEvent(new Event('resize'));
-  } else {
-    manualResize = false;
+    if (!state.manualResize) {
+      state.manualResize = true;
+      window.dispatchEvent(new Event('resize'));
+    } else {
+      state.manualResize = false;
+    }
+  });
+}
+
+
+// ========================================================================= //
+// INIT                                                                      //
+// ========================================================================= //
+
+// Attach to player
+const interval = setInterval(checkForPlayer, 100);
+function checkForPlayer() {
+  if (document.querySelector('ytd-watch')) {
+    clearInterval(interval);
+    injectPIP();
   }
 }
