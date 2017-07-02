@@ -16,6 +16,10 @@
   opacity: 0;
 }
 
+.ytp-fullscreen #youtube-pip-toggle {
+  display: none;
+}
+
 .youtube-pip-player-msg {
   align-items: center;
   color: #777;
