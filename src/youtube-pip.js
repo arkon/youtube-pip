@@ -5,6 +5,7 @@
 // ========================================================================= //
 
 const state = {
+  isPolymer    : false,
   inPipMode    : false,
   manualPip    : false,
   manualResize : false
@@ -122,20 +123,24 @@ function resizePIP() {
 // INIT                                                                      //
 // ========================================================================= //
 
-function checkIfWatching() {
-  if (document.location.pathname === '/watch') {
-    // TODO: better check
-    const interval = setInterval(checkForPlayer, 100);
-    function checkForPlayer() {
-      if (document.querySelector('ytd-watch')) {
-        clearInterval(interval);
-        injectPIP();
+state.isPolymer = document.querySelector('body#body') === null;
+
+if (state.isPolymer) {
+  function checkIfWatching() {
+    if (document.location.pathname === '/watch') {
+      // TODO: better check
+      const interval = setInterval(checkForPlayer, 100);
+      function checkForPlayer() {
+        if (document.querySelector('ytd-watch')) {
+          clearInterval(interval);
+          injectPIP();
+        }
       }
     }
   }
+
+  window.addEventListener('yt-navigate-finish', checkIfWatching);
+  checkIfWatching();
+} else {
+  // TODO: handle non-Polymer design
 }
-
-window.addEventListener('yt-navigate-finish', checkIfWatching);
-checkIfWatching();
-
-// TODO: handle non-Polymer design
