@@ -22,6 +22,10 @@ const elRefs = {
 // ========================================================================= //
 
 function injectPIP() {
+  if (document.getElementById('youtube-pip-toggle')) {
+    return;
+  }
+
   // Get element references
   elRefs.player = document.querySelector('#top #player');
   elRefs.container = document.querySelector('#top #player #player-container');
@@ -51,6 +55,8 @@ function injectPIP() {
     threshold: 0.5
   });
   observer.observe(elRefs.player);
+
+  // TODO: allow dragging/resizing of PIP player
 }
 
 function togglePIP() {
@@ -116,11 +122,20 @@ function resizePIP() {
 // INIT                                                                      //
 // ========================================================================= //
 
-// Attach to player
-const interval = setInterval(checkForPlayer, 100);
-function checkForPlayer() {
-  if (document.querySelector('ytd-watch')) {
-    clearInterval(interval);
-    injectPIP();
+function checkIfWatching() {
+  if (document.location.pathname === '/watch') {
+    // TODO: better check
+    const interval = setInterval(checkForPlayer, 100);
+    function checkForPlayer() {
+      if (document.querySelector('ytd-watch')) {
+        clearInterval(interval);
+        injectPIP();
+      }
+    }
   }
 }
+
+window.addEventListener('yt-navigate-finish', checkIfWatching);
+checkIfWatching();
+
+// TODO: handle non-Polymer design

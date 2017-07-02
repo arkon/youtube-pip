@@ -6,11 +6,4 @@
 
 <!-- [<img src="https://developer.chrome.com/webstore/images/ChromeWebStore_Badge_v2_206x58.png" alt="Available in the Chrome Web Store">][chrome-store] -->
 
-## TODO
-
-- [ ] Work with old YouTube design
-- [ ] Resizing
-- [ ] Dragging around
-- [ ] Publish to store
-
 [chrome-store]: https://echeung.me/
