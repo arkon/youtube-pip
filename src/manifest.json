@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "Youtube Picture-in-Picture",
-  "short_name": "Youtube PIP",
+  "name": "YouTube Picture-in-Picture",
+  "short_name": "YouTube PIP",
   "description": "Adds picture-in-picture functionality to YouTube.",
   "version": "0.0.1",
   "content_scripts": [{
