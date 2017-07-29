@@ -12,11 +12,11 @@ const state = {
 };
 
 const elRefs = {
-  player    : null,
-  container : null,
-  player_container: null,
-  msg       : null,
-  header    : null
+  playerSection   : null,
+  playerContainer : null,
+  playerWrapper   : null,
+  msg             : null,
+  pipHeader       : null
 };
 
 
@@ -33,14 +33,14 @@ function injectPIP() {
 
   // Get element references
   if (state.isPolymer) {
-    elRefs.player = document.querySelector('#top #player');
-    elRefs.container = document.querySelector('#top #player #player-container');
-    elRefs.player_container = document.querySelector('#movie_player .html5-video-container');
+    elRefs.playerSection = document.querySelector('#top #player');
+    elRefs.playerContainer = document.querySelector('#top #player #player-container');
+    elRefs.playerWrapper = document.querySelector('#movie_player .html5-video-container');
     elPlayer = document.querySelector('#player-container #movie_player');
   } else {
-    elRefs.player = document.querySelector('#player-api');
-    elRefs.container = document.querySelector('#movie_player');
-    elRefs.player_container = document.querySelector('#movie_player .html5-video-container');
+    elRefs.playerSection = document.querySelector('#player-api');
+    elRefs.playerContainer = document.querySelector('#movie_player');
+    elRefs.playerWrapper = document.querySelector('#movie_player .html5-video-container');
     elPlayer = document.querySelector('#movie_player');
   }
 
@@ -68,12 +68,12 @@ function injectPIP() {
   }, {
     threshold: 0.5
   });
-  observer.observe(elRefs.player);
+  observer.observe(elRefs.playerSection);
 }
 
 function togglePIP() {
   state.inPipMode = !state.inPipMode;
-  elRefs.player.classList.toggle('yt-pip', state.inPipMode);
+  elRefs.playerSection.classList.toggle('yt-pip', state.inPipMode);
 
   if (state.inPipMode) {
     // attachPIPHeader();
@@ -96,23 +96,23 @@ function togglePIP() {
 }
 
 function attachPIPHeader() {
-  elRefs.header = document.createElement('div');
-  elRefs.header.classList.add('yt-pip-header');
-  elRefs.header.innerText = 'Header test';
+  elRefs.pipHeader = document.createElement('div');
+  elRefs.pipHeader.classList.add('yt-pip-header');
+  elRefs.pipHeader.innerText = 'Header test';
 
-  elRefs.container.insertBefore(elRefs.header, elRefs.container.firstChild);
+  elRefs.playerContainer.insertBefore(elRefs.pipHeader, elRefs.playerContainer.firstChild);
 
   // TODO: allow dragging/resizing of PIP player
 }
 
 function removePIPHeader() {
-  elRefs.container.removeChild(elRefs.header);
-  elRefs.header = null;
+  elRefs.playerContainer.removeChild(elRefs.pipHeader);
+  elRefs.pipHeader = null;
 }
 
 function movePlayer() {
-  elRefs.container.style.bottom = '16px';
-  elRefs.container.style.right  = '16px';
+  elRefs.playerContainer.style.bottom = '16px';
+  elRefs.playerContainer.style.right  = '16px';
 }
 
 function addPlayerMsg() {
@@ -120,12 +120,12 @@ function addPlayerMsg() {
   elRefs.msg.classList.add('yt-pip-player-msg');
   elRefs.msg.innerText = 'Click to return player';
   elRefs.msg.addEventListener('click', togglePIP);
-  elRefs.player.appendChild(elRefs.msg);
+  elRefs.playerSection.appendChild(elRefs.msg);
 }
 
 function removePlayerMsg() {
   elRefs.msg.removeEventListener('click', togglePIP);
-  elRefs.player.removeChild(elRefs.msg);
+  elRefs.playerSection.removeChild(elRefs.msg);
   elRefs.msg = null;
 }
 
@@ -138,11 +138,11 @@ function resizePIP() {
 
     let newHeight = newWidth / 16 * 9;
 
-    elRefs.container.style.width  = `${newWidth}px`;
-    elRefs.container.style.height = `${newHeight}px`;
+    elRefs.playerContainer.style.width  = `${newWidth}px`;
+    elRefs.playerContainer.style.height = `${newHeight}px`;
 
-    elRefs.player_container.style.width  = `${newWidth}px`;
-    elRefs.player_container.style.height = `${newHeight}px`;
+    elRefs.playerWrapper.style.width  = `${newWidth}px`;
+    elRefs.playerWrapper.style.height = `${newHeight}px`;
 
     if (!state.manualResize) {
       state.manualResize = true;
@@ -154,8 +154,8 @@ function resizePIP() {
 }
 
 function resetStyles() {
-  elRefs.container.style = null;
-  elRefs.player_container.style = null;
+  elRefs.playerContainer.style = null;
+  elRefs.playerWrapper.style = null;
 }
 
 
