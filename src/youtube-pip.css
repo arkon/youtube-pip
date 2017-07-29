@@ -61,3 +61,7 @@ body#body .yt-pip #movie_player /* Old */ {
   height: 100% !important;
   width: 100% !important;
 }
+
+.yt-pip .ytp-chrome-bottom {
+  width: calc(100% - 24px) !important;
+}
