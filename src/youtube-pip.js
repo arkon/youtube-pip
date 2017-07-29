@@ -14,7 +14,9 @@ const state = {
 const elRefs = {
   player    : null,
   container : null,
-  msg       : null
+  player_container: null,
+  msg       : null,
+  header    : null
 };
 
 
@@ -33,10 +35,12 @@ function injectPIP() {
   if (state.isPolymer) {
     elRefs.player = document.querySelector('#top #player');
     elRefs.container = document.querySelector('#top #player #player-container');
+    elRefs.player_container = document.querySelector('#movie_player .html5-video-container');
     elPlayer = document.querySelector('#player-container #movie_player');
   } else {
     elRefs.player = document.querySelector('#player-api');
     elRefs.container = document.querySelector('#movie_player');
+    elRefs.player_container = document.querySelector('#movie_player .html5-video-container');
     elPlayer = document.querySelector('#movie_player');
   }
 
@@ -65,8 +69,6 @@ function injectPIP() {
     threshold: 0.5
   });
   observer.observe(elRefs.player);
-
-  // TODO: allow dragging/resizing of PIP player
 }
 
 function togglePIP() {
@@ -74,15 +76,16 @@ function togglePIP() {
   elRefs.player.classList.toggle('yt-pip', state.inPipMode);
 
   if (state.inPipMode) {
-    elRefs.container.style.bottom = '16px';
-    elRefs.container.style.right  = '16px';
+    // attachPIPHeader();
+    movePlayer();
 
     window.addEventListener('resize', resizePIP);
     addPlayerMsg();
   } else {
     state.manualPip = false;
 
-    elRefs.container.style = null;
+    // removePIPHeader();
+    resetStyles();
 
     window.removeEventListener('resize', resizePIP);
     removePlayerMsg();
@@ -90,6 +93,26 @@ function togglePIP() {
 
   state.manualResize = false;
   window.dispatchEvent(new Event('resize'));
+}
+
+function attachPIPHeader() {
+  elRefs.header = document.createElement('div');
+  elRefs.header.classList.add('yt-pip-header');
+  elRefs.header.innerText = 'Header test';
+
+  elRefs.container.insertBefore(elRefs.header, elRefs.container.firstChild);
+
+  // TODO: allow dragging/resizing of PIP player
+}
+
+function removePIPHeader() {
+  elRefs.container.removeChild(elRefs.header);
+  elRefs.header = null;
+}
+
+function movePlayer() {
+  elRefs.container.style.bottom = '16px';
+  elRefs.container.style.right  = '16px';
 }
 
 function addPlayerMsg() {
@@ -118,6 +141,9 @@ function resizePIP() {
     elRefs.container.style.width  = `${newWidth}px`;
     elRefs.container.style.height = `${newHeight}px`;
 
+    elRefs.player_container.style.width  = `${newWidth}px`;
+    elRefs.player_container.style.height = `${newHeight}px`;
+
     if (!state.manualResize) {
       state.manualResize = true;
       window.dispatchEvent(new Event('resize'));
@@ -125,6 +151,11 @@ function resizePIP() {
       state.manualResize = false;
     }
   });
+}
+
+function resetStyles() {
+  elRefs.container.style = null;
+  elRefs.player_container.style = null;
 }
 
 

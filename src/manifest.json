@@ -3,7 +3,7 @@
   "name": "YouTube Picture-in-Picture",
   "short_name": "YouTube PIP",
   "description": "Adds picture-in-picture functionality to YouTube.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "content_scripts": [{
     "matches": ["*://www.youtube.com/*"],
     "css": ["youtube-pip.css"],
