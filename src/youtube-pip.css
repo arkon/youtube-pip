@@ -1,7 +1,11 @@
 :root {
   --yt-pip-toggle-size: 36px;
   --yt-pip-header-height: 24px;
+  --yt-pip-dark-bg: #232323;
 }
+
+
+/* == Toggle button at top left of video  == */
 
 #yt-pip-toggle {
   background: transparent;
@@ -18,13 +22,19 @@
   z-index: 99;
 }
 
+  /* Hide with other controls  */
   .ytp-autohide #yt-pip-toggle {
     opacity: 0;
   }
 
+  /* Hide when in PIP or fullscreen  */
+  .ytp-pip #yt-pip-toggle,
   .ytp-fullscreen #yt-pip-toggle {
     display: none;
   }
+
+
+/* == Toggle message in place of player == */
 
 .yt-pip-player-msg {
   align-items: center;
@@ -36,13 +46,17 @@
   width: 100%;
 }
 
-[dark] .yt-pip-player-msg {
-  color: #ccc;
-}
+  /* Dark Polymer design */
+  [dark] .yt-pip-player-msg {
+    color: #ccc;
+  }
+
+
+/* == PIP window  ==*/
 
 .yt-pip #player-container, /* Polymer */
 body#body .yt-pip #movie_player /* Old */ {
-  box-shadow: 0 0 1.5em #000;
+  box-shadow: 0 0 1.5em var(--yt-pip-dark-bg);
   max-height: 100vh;
   max-width: 100vw;
   min-height: 100px;
@@ -51,17 +65,20 @@ body#body .yt-pip #movie_player /* Old */ {
   z-index: 99;
 }
 
+  /* Force video to take up available space */
+  .yt-pip .html5-video-container,
+  .yt-pip video {
+    height: 100% !important;
+    width: 100% !important;
+  }
+
+  /* Force proper width for controls at bottom */
+  .yt-pip .ytp-chrome-bottom {
+    width: calc(100% - 24px) !important;
+  }
+
 .yt-pip-header {
-  background: #333;
+  background: var(--yt-pip-dark-bg);
   cursor: move;
   height: var(--yt-pip-header-height);
-}
-
-.yt-pip video {
-  height: 100% !important;
-  width: 100% !important;
-}
-
-.yt-pip .ytp-chrome-bottom {
-  width: calc(100% - 24px) !important;
 }

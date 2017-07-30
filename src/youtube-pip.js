@@ -6,15 +6,13 @@
 
 const state = {
   isPolymer    : false,
-  inPipMode    : false,
-  manualPip    : false,
+  inPIPMode    : false,
   manualResize : false
 };
 
 const elRefs = {
   playerSection   : null,
   playerContainer : null,
-  playerWrapper   : null,
   msg             : null,
   pipHeader       : null
 };
@@ -35,12 +33,10 @@ function injectPIP() {
   if (state.isPolymer) {
     elRefs.playerSection = document.querySelector('#top #player');
     elRefs.playerContainer = document.querySelector('#top #player #player-container');
-    elRefs.playerWrapper = document.querySelector('#movie_player .html5-video-container');
     elPlayer = document.querySelector('#player-container #movie_player');
   } else {
     elRefs.playerSection = document.querySelector('#player-api');
     elRefs.playerContainer = document.querySelector('#movie_player');
-    elRefs.playerWrapper = document.querySelector('#movie_player .html5-video-container');
     elPlayer = document.querySelector('#movie_player');
   }
 
@@ -53,15 +49,14 @@ function injectPIP() {
 
   // Add listener to toggle button
   elTogglePIP.addEventListener('click', () => {
-    state.manualPip = true;
     togglePIP();
   });
 
   // Auto-PIP on scroll (if not manually done)
   const observer = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
-      if ((entry.intersectionRatio < 0.5 && !state.inPipMode) ||
-          (entry.intersectionRatio > 0.5 && state.inPipMode && !state.manualPip)) {
+      if ((entry.intersectionRatio < 0.5 && !state.inPIPMode) ||
+          (entry.intersectionRatio > 0.5 && state.inPIPMode)) {
         togglePIP();
       }
     });
@@ -72,19 +67,17 @@ function injectPIP() {
 }
 
 function togglePIP() {
-  state.inPipMode = !state.inPipMode;
-  elRefs.playerSection.classList.toggle('yt-pip', state.inPipMode);
+  state.inPIPMode = !state.inPIPMode;
+  elRefs.playerSection.classList.toggle('yt-pip', state.inPIPMode);
 
-  if (state.inPipMode) {
-    // attachPIPHeader();
+  if (state.inPIPMode) {
+    attachPIPHeader();
     movePlayer();
 
     window.addEventListener('resize', resizePIP);
     addPlayerMsg();
   } else {
-    state.manualPip = false;
-
-    // removePIPHeader();
+    removePIPHeader();
     resetStyles();
 
     window.removeEventListener('resize', resizePIP);
@@ -102,7 +95,7 @@ function attachPIPHeader() {
 
   elRefs.playerContainer.insertBefore(elRefs.pipHeader, elRefs.playerContainer.firstChild);
 
-  // TODO: allow dragging/resizing of PIP player
+  // TODO: Close button + dragging/resicing
 }
 
 function removePIPHeader() {
@@ -141,9 +134,6 @@ function resizePIP() {
     elRefs.playerContainer.style.width  = `${newWidth}px`;
     elRefs.playerContainer.style.height = `${newHeight}px`;
 
-    elRefs.playerWrapper.style.width  = `${newWidth}px`;
-    elRefs.playerWrapper.style.height = `${newHeight}px`;
-
     if (!state.manualResize) {
       state.manualResize = true;
       window.dispatchEvent(new Event('resize'));
@@ -155,7 +145,6 @@ function resizePIP() {
 
 function resetStyles() {
   elRefs.playerContainer.style = null;
-  elRefs.playerWrapper.style = null;
 }
 
 
