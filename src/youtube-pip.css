@@ -22,13 +22,13 @@
   z-index: 99;
 }
 
-  /* Hide with other controls  */
+  /* Hide with other controls */
   .ytp-autohide #yt-pip-toggle {
     opacity: 0;
   }
 
-  /* Hide when in PIP or fullscreen  */
-  .ytp-pip #yt-pip-toggle,
+  /* Hide when in PIP or fullscreen */
+  /* .yt-pip #yt-pip-toggle, */
   .ytp-fullscreen #yt-pip-toggle {
     display: none;
   }
@@ -52,7 +52,7 @@
   }
 
 
-/* == PIP window  ==*/
+/* == PIP window  == */
 
 .yt-pip #player-container, /* Polymer */
 body#body .yt-pip #movie_player /* Old */ {
@@ -77,8 +77,16 @@ body#body .yt-pip #movie_player /* Old */ {
     width: calc(100% - 24px) !important;
   }
 
+
+/* PIP window header */
+
 .yt-pip-header {
   background: var(--yt-pip-dark-bg);
   cursor: move;
+  display: none;
   height: var(--yt-pip-header-height);
 }
+
+  .yt-pip .yt-pip-header {
+    display: block;
+  }

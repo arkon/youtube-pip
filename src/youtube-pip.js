@@ -13,9 +13,12 @@ const state = {
 const elRefs = {
   playerSection   : null,
   playerContainer : null,
+  player          : null,
   msg             : null,
   pipHeader       : null
 };
+
+const SCROLL_THRESHOLD = 0.5;
 
 
 // ========================================================================= //
@@ -27,65 +30,46 @@ function injectPIP() {
     return;
   }
 
-  let elPlayer;
-
   // Get element references
   if (state.isPolymer) {
-    elRefs.playerSection = document.querySelector('#top #player');
+    elRefs.playerSection   = document.querySelector('#top #player');
     elRefs.playerContainer = document.querySelector('#top #player #player-container');
-    elPlayer = document.querySelector('#player-container #movie_player');
+    elRefs.player          = document.querySelector('#player-container #movie_player');
   } else {
-    elRefs.playerSection = document.querySelector('#player-api');
+    elRefs.playerSection   = document.querySelector('#player-api');
     elRefs.playerContainer = document.querySelector('#movie_player');
-    elPlayer = document.querySelector('#movie_player');
+    elRefs.player          = document.querySelector('#movie_player');
   }
 
   // Add toggle button to corner of player
-  const elTogglePIP = document.createElement('button');
-  elTogglePIP.id = 'yt-pip-toggle';
-  elTogglePIP.title = 'Toggle PIP';
-  elTogglePIP.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 22.11"><rect x="18.73" y="10.53" width="17.27" height="11.58" fill="#777"/><polygon points="30.85 1 3.48 1 1.55 1 1.55 2.93 1.55 17.48 1.55 19.41 3.48 19.41 16.69 19.41 16.69 17.48 3.48 17.48 3.48 2.93 30.85 2.93 30.85 8.69 32.78 8.69 32.78 2.93 32.78 1 30.85 1" fill="#777"/><rect x="17.18" y="9.53" width="17.27" height="11.58" fill="#fff"/><polygon points="29.3 0 1.93 0 0 0 0 1.93 0 16.48 0 18.41 1.93 18.41 15.14 18.41 15.14 16.48 1.93 16.48 1.93 1.93 29.3 1.93 29.3 7.69 31.23 7.69 31.23 1.93 31.23 0 29.3 0" fill="#fff"/></svg>';
-  elPlayer.appendChild(elTogglePIP);
+  attachToggleButton();
 
-  // Add listener to toggle button
-  elTogglePIP.addEventListener('click', () => {
-    togglePIP();
-  });
+  // Add header for PIP mode
+  // attachPIPHeader();
 
   // Auto-PIP on scroll (if not manually done)
   const observer = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
-      if ((entry.intersectionRatio < 0.5 && !state.inPIPMode) ||
-          (entry.intersectionRatio > 0.5 && state.inPIPMode)) {
+      if ((entry.intersectionRatio < SCROLL_THRESHOLD && !state.inPIPMode) ||
+          (entry.intersectionRatio > SCROLL_THRESHOLD && state.inPIPMode)) {
         togglePIP();
       }
     });
   }, {
-    threshold: 0.5
+    threshold: SCROLL_THRESHOLD
   });
   observer.observe(elRefs.playerSection);
 }
 
-function togglePIP() {
-  state.inPIPMode = !state.inPIPMode;
-  elRefs.playerSection.classList.toggle('yt-pip', state.inPIPMode);
+function attachToggleButton() {
+  const elTogglePIP = document.createElement('button');
+  elTogglePIP.id = 'yt-pip-toggle';
+  elTogglePIP.title = 'Toggle PIP';
+  elTogglePIP.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 22.11"><rect x="18.73" y="10.53" width="17.27" height="11.58" fill="#777"/><polygon points="30.85 1 3.48 1 1.55 1 1.55 2.93 1.55 17.48 1.55 19.41 3.48 19.41 16.69 19.41 16.69 17.48 3.48 17.48 3.48 2.93 30.85 2.93 30.85 8.69 32.78 8.69 32.78 2.93 32.78 1 30.85 1" fill="#777"/><rect x="17.18" y="9.53" width="17.27" height="11.58" fill="#fff"/><polygon points="29.3 0 1.93 0 0 0 0 1.93 0 16.48 0 18.41 1.93 18.41 15.14 18.41 15.14 16.48 1.93 16.48 1.93 1.93 29.3 1.93 29.3 7.69 31.23 7.69 31.23 1.93 31.23 0 29.3 0" fill="#fff"/></svg>';
+  elRefs.player.appendChild(elTogglePIP);
 
-  if (state.inPIPMode) {
-    attachPIPHeader();
-    movePlayer();
-
-    window.addEventListener('resize', resizePIP);
-    addPlayerMsg();
-  } else {
-    removePIPHeader();
-    resetStyles();
-
-    window.removeEventListener('resize', resizePIP);
-    removePlayerMsg();
-  }
-
-  state.manualResize = false;
-  window.dispatchEvent(new Event('resize'));
+  // Add listener to toggle button
+  elTogglePIP.addEventListener('click', togglePIP);
 }
 
 function attachPIPHeader() {
@@ -95,12 +79,27 @@ function attachPIPHeader() {
 
   elRefs.playerContainer.insertBefore(elRefs.pipHeader, elRefs.playerContainer.firstChild);
 
-  // TODO: Close button + dragging/resicing
+  // TODO: Close button + dragging/resizing
 }
 
-function removePIPHeader() {
-  elRefs.playerContainer.removeChild(elRefs.pipHeader);
-  elRefs.pipHeader = null;
+function togglePIP() {
+  state.inPIPMode = !state.inPIPMode;
+  elRefs.playerSection.classList.toggle('yt-pip', state.inPIPMode);
+
+  if (state.inPIPMode) {
+    movePlayer();
+
+    window.addEventListener('resize', resizePIP);
+    addPlayerMsg();
+  } else {
+    resetStyles();
+
+    window.removeEventListener('resize', resizePIP);
+    removePlayerMsg();
+  }
+
+  state.manualResize = false;
+  window.dispatchEvent(new Event('resize'));
 }
 
 function movePlayer() {
