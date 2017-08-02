@@ -166,7 +166,7 @@ function checkIfWatching() {
   }
 }
 
-state.isPolymer = document.querySelector('body#body') === null;
+state.isPolymer = document.querySelector('ytd-app') !== null;
 
 if (state.isPolymer) {
   watchCheckQuery = 'ytd-watch';
